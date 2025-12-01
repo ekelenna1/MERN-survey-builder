@@ -49,7 +49,7 @@ const Dashboard = () => {
         <h1>My Polls</h1>
         <button onClick={() => { localStorage.removeItem('token'); navigate('/'); }}>Logout</button>
       </header>
-      <button onClick={() => navigate('/create')} style={{ padding: '10px 20px', margin: '20px 0', background: 'green', color: 'white', border: 'none' }}>+ Create New Poll</button>
+      <button onClick={() => navigate('/create-poll')} style={{ padding: '10px 20px', margin: '20px 0', background: 'green', color: 'white', border: 'none' }}>+ Create New Poll</button>
       
       {polls.map(poll => (
         <div key={poll._id} style={{ border: '1px solid #ccc', padding: '15px', marginBottom: '10px', borderRadius: '5px' }}>
