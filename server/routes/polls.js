@@ -10,6 +10,19 @@ router.get('/mine', auth, (req, res) => {
     .catch(err => res.status(500).send('Server Error'));
 });
 
+// Get single poll (public)
+router.get('/:id', (req, res) => {
+  Poll.findById(req.params.id)
+    .then(poll => {
+      if (!poll) return res.status(404).json({ msg: 'Poll not found' });
+      res.json(poll);
+    })
+    .catch(err => {
+      if (err.kind === 'ObjectId') return res.status(404).json({ msg: 'Poll not found' });
+      res.status(500).send('Server Error');
+    });
+});
+
 router.post('/', auth, (req, res) => {
     const { title, questions } = req.body;
   
@@ -28,6 +41,26 @@ router.post('/', auth, (req, res) => {
       .catch(err => {
         console.error(err.message);
         res.status(500).send('Server Error');
+      });
+  });
+
+  router.post('/:id/vote', (req, res) => {
+    const { answers } = req.body; 
+  
+    Poll.findById(req.params.id)
+      .then(poll => {
+        if (!poll) return res.status(404).json({ msg: 'Poll not found' });
+  
+        poll.votes.push({ answers });
+        return poll.save();
+      })
+      .then(poll => {
+          // poll might be undefined if we returned 404 above, so check for headersSent
+          if (!res.headersSent) res.json(poll);
+      })
+      .catch(err => {
+        console.error(err.message);
+        if (!res.headersSent) res.status(500).send('Server Error');
       });
   });
 
