@@ -9,3 +9,5 @@ router.get('/mine', auth, (req, res) => {
     .then(polls => res.json(polls))
     .catch(err => res.status(500).send('Server Error'));
 });
+
+module.exports = router;
