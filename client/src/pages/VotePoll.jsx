@@ -20,12 +20,12 @@ const VotePoll = () => {
         const cur = answers[idx] || [];
         setAnswers({
             ...answers,
-            [idx]: cur.includes(val) ? cur.filter(c => c !== val) : [...cur, val] });
+            [idx]: cur.includes(option) ? cur.filter(c => c !== option) : [...cur, option] });
     };
 
     const handleSubmit = (e) => {
     e.preventDefault();
-    const formatted = Object.keys(answers).map(k => ({ questionIndex: Number(k), answer: answers[k] }));
+    const formatted = Object.keys(answers).map(k => ({ questionIndex: Number(k), response: answers[k] }));
 
     fetch(`http://localhost:5001/api/polls/${id}/vote`, {
         method: 'POST',

@@ -71,6 +71,7 @@ const EditPoll = () => {
               <option value="checkbox">Checkbox</option>
               <option value="text">Short Answer</option>
               <option value="scale">Scale (1-5)</option>
+              <option value="ranked">Ranked</option>
             </select>
             
             {(q.type === 'multiple-choice' || q.type === 'checkbox') && (
