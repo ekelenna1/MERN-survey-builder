@@ -25,6 +25,42 @@ const PollResults = () => {
       });
   }, [id]);
 
+  const downloadCSV = () => {
+    if (!poll || poll.votes.length === 0) {
+      alert('No votes to download');
+      return;
+    }
+
+    const headers = ['Submission Date', ...poll.questions.map(q => q.text)];
+    const rows = poll.votes.map(vote => {
+        const date = new Date(vote.submitttedAt).toLocaleString();
+        const answers = poll.questions.map((q, index) => {
+            const ansObj = vote.answers.find(a => a.questionIndex === index);
+            let answerText = ansObj ? ansObj.response : "";
+    
+            if (Array.isArray(answerText)) {
+              answerText = answerText.join(" | ");
+            }
+
+            const safeText = String(answerText).replace(/"/g, '""');
+            return `"${safeText}"`;
+        });
+
+        return [date, ...answers].join(',');
+    });
+
+    const csvContent = [headers.join(","), ...rows].join("\n");
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `poll_results_${id}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   if (loading) return <p>Loading...</p>;
   if (!poll) return <p>Poll not found</p>;
 
@@ -50,7 +86,12 @@ const PollResults = () => {
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-      <button onClick={() => navigate('/dashboard')}>&larr; Back to Dashboard</button>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <button onClick={() => navigate('/dashboard')}>&larr; Back to Dashboard</button>
+            <button onClick={downloadCSV} style={{ background: '#28a745', color: 'white', padding: '10px 15px', border: 'none', cursor: 'pointer' }}>
+                📥 Export to CSV
+            </button>
+        </div>
       <h1>Results: {poll.title}</h1>
       <p>Total Respondents: {poll.votes.length}</p>
 
