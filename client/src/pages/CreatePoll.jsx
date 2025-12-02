@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+
 const CreatePoll = () => {
   const [title, setTitle] = useState('');
+  const [expiresAt, setExpiresAt] = useState('');
   const [questions, setQuestions] = useState([{ text: '', type: 'multiple-choice', options: ['Option 1'] }]);
   const navigate = useNavigate();
 
@@ -31,7 +33,7 @@ const CreatePoll = () => {
     fetch('http://localhost:5001/api/polls', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'x-auth-token': token },
-      body: JSON.stringify({ title, questions })
+      body: JSON.stringify({ title, questions, expiresAt: expiresAt || null})
     })
     .then(res => {
       if (res.ok) navigate('/dashboard');
@@ -46,6 +48,15 @@ const CreatePoll = () => {
       <form onSubmit={handleSubmit}>
         <input value={title} onChange={e => setTitle(e.target.value)} placeholder="Poll Title" required style={{ width: '100%', padding: '10px', marginBottom: '20px', fontSize: '18px' }} />
         
+        <div style={{ marginBottom: '20px', padding: '10px', background: '#eef', borderRadius: '5px' }}>
+            <label><strong>Poll Expiration (Optional): </strong></label>
+            <input 
+                type="datetime-local" 
+                value={expiresAt} 
+                onChange={e => setExpiresAt(e.target.value)} 
+            />
+        </div>
+
         {questions.map((q, i) => (
           <div key={i} style={{ border: '1px solid #ddd', padding: '15px', marginBottom: '20px', background: '#f9f9f9' }}>
             <input value={q.text} onChange={e => updateQ(i, 'text', e.target.value)} placeholder="Question Text" required style={{ width: '100%', padding: '8px', marginBottom: '10px' }} />

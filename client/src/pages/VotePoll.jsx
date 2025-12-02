@@ -45,6 +45,16 @@ const VotePoll = () => {
     if (!poll) return <p>Loading...</p>;
     if (submitted) return <div style={{ textAlign: 'center', marginTop: '50px' }}><h1>Vote Recorded!</h1></div>;
 
+    if (poll.expiresAt && new Date() > new Date(poll.expiresAt)) {
+        return (
+          <div style={{ maxWidth: '600px', margin: '50px auto', padding: '20px', border: '1px solid red', borderRadius: '8px', textAlign: 'center', backgroundColor: '#fff5f5' }}>
+            <h1 style={{ color: 'red' }}>Poll Closed</h1>
+            <p>This poll stopped accepting votes on:</p>
+            <h3>{new Date(poll.expiresAt).toLocaleString()}</h3>
+          </div>
+        );
+      }
+
     return (
         <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto' }}>
         <h1>{poll.title}</h1>

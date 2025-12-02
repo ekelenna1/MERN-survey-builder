@@ -5,6 +5,7 @@ const EditPoll = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
+  const [expiresAt, setExpiresAt] = useState('');
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -17,6 +18,13 @@ const EditPoll = () => {
       const data = await res.json();
       setTitle(data.title);
       setQuestions(data.questions);
+
+      if (data.expiresAt) {
+        const date = new Date(data.expiresAt);
+        date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+        setExpiresAt(date.toISOString().slice(0, 16));
+      }
+
       setLoading(false);
     };
     fetchPoll();
@@ -44,11 +52,10 @@ const EditPoll = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const token = localStorage.getItem('token');
-    
     const res = await fetch(`http://localhost:5001/api/polls/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json', 'x-auth-token': token },
-      body: JSON.stringify({ title, questions })
+      body: JSON.stringify({ title, questions, expiresAt })
     });
 
     if (res.ok) navigate('/dashboard');
@@ -62,7 +69,15 @@ const EditPoll = () => {
       <h1>Edit Poll</h1>
       <form onSubmit={handleSubmit}>
         <input value={title} onChange={e => setTitle(e.target.value)} required style={{ width: '100%', padding: '10px', marginBottom: '20px', fontSize: '18px' }} />
-        
+        <div style={{ marginBottom: '20px', padding: '10px', background: '#fff3cd', borderRadius: '5px' }}>
+            <label><strong>Edit Expiration: </strong></label>
+            <input 
+                type="datetime-local" 
+                value={expiresAt} 
+                onChange={e => setExpiresAt(e.target.value)} 
+            />
+        </div>
+
         {questions.map((q, i) => (
           <div key={i} style={{ border: '1px solid #ddd', padding: '15px', marginBottom: '20px', background: '#f9f9f9' }}>
             <input value={q.text} onChange={e => updateQ(i, 'text', e.target.value)} required style={{ width: '100%', marginBottom: '10px' }} />

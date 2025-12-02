@@ -24,7 +24,7 @@ router.get('/:id', (req, res) => {
 });
 
 router.post('/', auth, (req, res) => {
-    const { title, questions } = req.body;
+    const { title, questions, expiresAt } = req.body;
   
     if (!title || !questions || questions.length === 0) {
       return res.status(400).json({ msg: 'Please include a title and at least one question.' });
@@ -33,6 +33,7 @@ router.post('/', auth, (req, res) => {
     const newPoll = new Poll({
       title,
       questions,
+      expiresAt,
       creator: req.user.id
     });
   
@@ -50,7 +51,11 @@ router.post('/', auth, (req, res) => {
     Poll.findById(req.params.id)
       .then(poll => {
         if (!poll) return res.status(404).json({ msg: 'Poll not found' });
-  
+        
+        if (poll.expiresAt && new Date() > new Date(poll.expiresAt)) {
+          return res.status(400).json({ msg: 'Poll has expired' });
+        }
+
         poll.votes.push({ answers });
         return poll.save();
       })
@@ -83,7 +88,7 @@ router.delete('/:id', auth, (req, res) => {
 });
 
 router.put('/:id', auth, (req, res) => {
-  const { title, questions } = req.body;
+  const { title, questions, expiresAt } = req.body;
 
   Poll.findOne({ _id: req.params.id, creator: req.user.id })
     .then(poll => {
@@ -93,6 +98,7 @@ router.put('/:id', auth, (req, res) => {
       }
       poll.title = title;
       poll.questions = questions;
+      poll.expiresAt = expiresAt;
       return poll.save();
     })
     .then(updatedPoll => {
