@@ -31,9 +31,15 @@ const PollResults = () => {
       return;
     }
 
-    const headers = ['Submission Date', ...poll.questions.map(q => q.text)];
+    const headers = ['Submission Date', ...poll.questions.map(q => `"${q.text}"`)];
     const rows = poll.votes.map(vote => {
-        const date = new Date(vote.submitttedAt).toLocaleString();
+        let dateStr = "N/A";
+        if (vote.submittedAt) {
+            const d = new Date(vote.submittedAt);
+            if (!isNaN(d)) {
+                dateStr = `"${d.toLocaleString()}"`;
+            }
+        }
         const answers = poll.questions.map((q, index) => {
             const ansObj = vote.answers.find(a => a.questionIndex === index);
             let answerText = ansObj ? ansObj.response : "";
@@ -46,7 +52,7 @@ const PollResults = () => {
             return `"${safeText}"`;
         });
 
-        return [date, ...answers].join(',');
+        return [dateStr, ...answers].join(',');
     });
 
     const csvContent = [headers.join(","), ...rows].join("\n");
