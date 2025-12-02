@@ -64,3 +64,5 @@ const VotePoll = () => {
       </div>
     );
   };
+
+export default VotePoll;

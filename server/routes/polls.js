@@ -63,5 +63,45 @@ router.post('/', auth, (req, res) => {
         if (!res.headersSent) res.status(500).send('Server Error');
       });
   });
+    
+router.delete('/:id', auth, (req, res) => {
+  Poll.findOne({ _id: req.params.id, creator: req.user.id })
+    .then(poll => {
+      if (!poll) {
+        res.status(404).json({ msg: 'Poll not found or unauthorized' });
+        return null;
+      }
+      return Poll.findByIdAndDelete(req.params.id);
+    })
+    .then(deleted => {
+      if (deleted) res.json({ msg: 'Poll removed' });
+    })
+    .catch(err => {
+      console.error(err.message);
+      res.status(500).send('Server Error');
+    });
+});
+
+router.put('/:id', auth, (req, res) => {
+  const { title, questions } = req.body;
+
+  Poll.findOne({ _id: req.params.id, creator: req.user.id })
+    .then(poll => {
+      if (!poll) {
+        res.status(404).json({ msg: 'Poll not found or unauthorized' });
+        return null;
+      }
+      poll.title = title;
+      poll.questions = questions;
+      return poll.save();
+    })
+    .then(updatedPoll => {
+      if (updatedPoll) res.json(updatedPoll);
+    })
+    .catch(err => {
+      console.error(err.message);
+      res.status(500).send('Server Error');
+    });
+  });
 
 module.exports = router;
