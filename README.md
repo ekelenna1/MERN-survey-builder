@@ -32,6 +32,9 @@ Database/security: Correctly models the relationship between User and Polls. (ca
 
 
 Creative Portion (15pts)
+ - Added logic to allow poll owners to export their poll results as a csv formatted into a chart
+ - Added expirations to polls, users can set expiration dates which prevent voters from accessing the poll after set expiration date.
+        - also added logic to edit the expiration date which allows poll owners to change the expiration to close early or reoprn as they please
 
 Best Practices (5 points)
 Code is readable and well formatted (3pts)
