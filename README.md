@@ -1,47 +1,46 @@
 # Dynamic Survey Builder (MERN Stack)
 
 ### Overview
-A full-stack web application that allows users to create, manage, and distribute dynamic surveys with live updates. Built using the **MERN stack** (MongoDB, Express.js, React, Node.js), this platform features secure authentication, complex data modeling, and real-time result aggregation.
+A full-stack web application designed for creating, distributing, and analyzing dynamic polls in real-time. Built with the **MERN stack** (MongoDB, Express, React, Node.js), this project demonstrates secure user authentication, complex data modeling, and automated data visualization features.
 
-### Key Features
-* **Secure Authentication:** Implemented robust user registration, login, and logout functionality with password security, ensuring users can only manage their own data.
-* **Dynamic Poll Creation:** Authenticated users can build custom polls with five distinct question types:
-    * Multiple Choice
-    * Checkbox
-    * Text Area
-    * Likert Scale
-    * Ranked Choice
-* **User Dashboard:** Features a "My Polls" dashboard where users can view active polls, track engagement, and manage survey lifecycles.
-* **Public Voting Interface:** Unregistered users can access surveys via unique URLs to submit votes anonymously.
-* **Data Security:** relational modeling in MongoDB ensures strict access control—users cannot access or modify polls belonging to others.
 
-### "Creative Portion" & Advanced Logic
-* **Data Export & Visualization:** Added functionality for poll owners to export results as **CSV files** formatted for chart generation and external analysis.
-* **Poll Expiration & Lifecycle Management:**
-    * Implemented logic allowing owners to set automatic expiration dates for polls.
-    * Includes editing capabilities to "close early" or "re-open" polls by modifying the expiration timestamp, preventing access after the set time.
-
-### Technologies Used
-* **Frontend:** React.js
+### Technical Stack
+* **Frontend:** React.js, React Router, CSS3
 * **Backend:** Node.js, Express.js
-* **Database:** MongoDB (NoSQL)
-* **Best Practices:** HTML5 Validation, Clean/Modular Code Architecture
+* **Database:** MongoDB (Mongoose ODM)
+* **Utilities:** Axios (Fetch API), JWT, BCrypt
 
-### How to Run
-1.  Clone the repository.
-2.  Install dependencies for both client and server:
-    ```bash
-    cd client && npm install
-    cd ../server && npm install
-    ```
-3.  Set up your environment variables (MongoDB URI, JWT Secret) in a `.env` file.
-4.  Run the application (concurrently if configured, or separate terminals):
-    ```bash
-    # Terminal 1 (Server)
-    npm start
-    
-    # Terminal 2 (Client)
-    npm start
-    ```
+### Core Architecture & Features
 
-Note: 
+#### 🔐 Secure Authentication System
+* **JWT Authorization:** Implemented custom middleware (`auth.js`) to protect private routes using JSON Web Tokens.
+* **Password Security:** Utilizes `bcryptjs` for hashing and salting passwords before storage in MongoDB.
+* **Session Management:** Users can securely register, login, and manage their session state via local storage.
+
+#### 📊 Dynamic Poll Engine
+* **Complex Question Types:** The application supports five distinct data input types, handled via a flexible MongoDB schema:
+    * Multiple Choice
+    * Checkbox (Multi-select)
+    * Short Answer (Text)
+    * Likert Scale (1-5)
+    * Ranked Choice
+* **Lifecycle Management:** Poll owners can set specific **expiration dates**. The backend automatically rejects votes submitted after the `expiresAt` timestamp.
+* **Validation:** Server-side validation ensures questions cannot be submitted without required fields or with invalid data types.
+
+#### 📈 Data Analysis & Export
+* **Custom CSV Algorithm:** Built a client-side algorithm in `PollResults.jsx` that aggregates nested JSON vote data and converts it into a downloadable CSV format for external analysis (Excel/Sheets).
+* **Real-time Aggregation:** Vote counts are calculated on-the-fly to display instant results to the poll creator.
+
+### Data Export Logic
+The system iterates through every vote and maps answers back to their original question indices to ensure column alignment.
+
+```javascript
+// Logic from PollResults.jsx
+const downloadCSV = () => {
+    const headers = ['Submission Date', ...poll.questions.map(q => `"${q.text}"`)];
+    const rows = poll.votes.map(vote => {
+        // ... mapping logic to align answers with headers
+        return [dateStr, ...answers].join(',');
+    });
+    // ... Blob creation and download trigger
+};
