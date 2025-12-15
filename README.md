@@ -1,45 +1,47 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/tcXJhemk)
-# CSE330
+# Dynamic Survey Builder (MERN Stack)
 
-Lucas Colletti 510634 lcoll813
-Kelenna Eke-Okoro 518067 ekelenna1
+### Overview
+A full-stack web application that allows users to create, manage, and distribute dynamic surveys with live updates. Built using the **MERN stack** (MongoDB, Express.js, React, Node.js), this platform features secure authentication, complex data modeling, and real-time result aggregation.
 
+### Key Features
+* **Secure Authentication:** Implemented robust user registration, login, and logout functionality with password security, ensuring users can only manage their own data.
+* **Dynamic Poll Creation:** Authenticated users can build custom polls with five distinct question types:
+    * Multiple Choice
+    * Checkbox
+    * Text Area
+    * Likert Scale
+    * Ranked Choice
+* **User Dashboard:** Features a "My Polls" dashboard where users can view active polls, track engagement, and manage survey lifecycles.
+* **Public Voting Interface:** Unregistered users can access surveys via unique URLs to submit votes anonymously.
+* **Data Security:** relational modeling in MongoDB ensures strict access control—users cannot access or modify polls belonging to others.
 
-Dynamic Survey builder, with live updates
+### "Creative Portion" & Advanced Logic
+* **Data Export & Visualization:** Added functionality for poll owners to export results as **CSV files** formatted for chart generation and external analysis.
+* **Poll Expiration & Lifecycle Management:**
+    * Implemented logic allowing owners to set automatic expiration dates for polls.
+    * Includes editing capabilities to "close early" or "re-open" polls by modifying the expiration timestamp, preventing access after the set time.
 
-Rubric
+### Technologies Used
+* **Frontend:** React.js
+* **Backend:** Node.js, Express.js
+* **Database:** MongoDB (NoSQL)
+* **Best Practices:** HTML5 Validation, Clean/Modular Code Architecture
 
-Possible: 100 (rubric late)
-Requirements
+### How to Run
+1.  Clone the repository.
+2.  Install dependencies for both client and server:
+    ```bash
+    cd client && npm install
+    cd ../server && npm install
+    ```
+3.  Set up your environment variables (MongoDB URI, JWT Secret) in a `.env` file.
+4.  Run the application (concurrently if configured, or separate terminals):
+    ```bash
+    # Terminal 1 (Server)
+    npm start
+    
+    # Terminal 2 (Client)
+    npm start
+    ```
 
-Rubric submitted on time (5pts)
-
-Languages/Frameworks used (30pts):
-React (10pts)
-Express.js (10pts)
-MongoDB(10pts)
-
-Functionality (45pts)
-Users can securely register, login, logout with passwords (10pts)
-
-Poll Creation: authenticated users can create dynamic polls with many question types(1:multiple choice, 2:checkbox, 3:text area, 4:scale, 5:ranked choice) (10pts)
-
-Authenticated users have a "My Polls" dashboard where they can see a list of their active polls and manage them. (10pts)
-
-Unregistered users can visit a unique Poll URL, select among the options, and submit their vote. (10pts)
-
-Database/security: Correctly models the relationship between User and Polls. (cannot see another users polls) (5pts)
-
-
-Creative Portion (15pts)
- - Added logic to allow poll owners to export their poll results as a csv formatted into a chart
- - Added expirations to polls, users can set expiration dates which prevent voters from accessing the poll after set expiration date.
-        - also added logic to edit the expiration date which allows poll owners to change the expiration to close early or reoprn as they please
-
-Best Practices (5 points)
-Code is readable and well formatted (3pts)
-All pages pass the html validator(2pts)
-
-
-
-Approved by Carl Wang
+Note: 
